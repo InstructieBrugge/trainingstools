@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oefentools – Instructie zone Brugge</title>
+<meta name="description" content="Online oefentools voor treinbestuurders, gemaakt door instructie zone Brugge.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EEF1F4;
+    --ink: #1B2430;
+    --muted: #556270;
+    --line: #C9D1DA;
+    --board: #0E2340;
+    --board-line: #23395A;
+    --board-text: #F5F7FA;
+    --board-dim: #9FB0C6;
+    --signal: #F2C500;
+    --font: "Overpass", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 1.25rem; }
+
+  header.top { padding: 2.75rem 0 2rem; }
+  .sender {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-weight: 600; color: var(--muted); font-size: .95rem;
+  }
+  .sender::before {
+    content: ""; width: 1.4rem; height: .5rem; border-radius: 2px;
+    background: var(--signal); box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+  }
+  h1 {
+    font-weight: 800; font-size: clamp(2.1rem, 5.5vw, 3.6rem);
+    line-height: 1.04; letter-spacing: -.02em;
+    margin: .9rem 0 1rem; max-width: 18ch;
+  }
+  .lead { max-width: 58ch; color: var(--muted); margin: 0; font-size: 1.15rem; }
+
+  /* Vertrekbord */
+  .board {
+    background: var(--board); color: var(--board-text);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 0 0 6px #D6DCE3, 0 18px 40px -22px rgba(14,35,64,.6);
+  }
+  .board-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 1rem 1.5rem; border-bottom: 2px solid var(--signal);
+    font-weight: 600;
+  }
+  .board-head .clock { font-variant-numeric: tabular-nums; color: var(--signal); font-size: 1.25rem; font-weight: 800; }
+  .row {
+    display: grid;
+    grid-template-columns: 8.5rem 1fr auto;
+    gap: .25rem 1.5rem; align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--board-line);
+    text-decoration: none; color: inherit;
+  }
+  .row:first-of-type { border-top: 0; }
+  .row:hover { background: #14305A; }
+  .row:focus-visible { outline: 3px solid var(--signal); outline-offset: -3px; }
+  .theme { color: var(--signal); font-weight: 600; font-size: .95rem; }
+  .name { font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
+  .what { grid-column: 2; color: var(--board-dim); font-size: 1rem; max-width: 60ch; }
+  .go {
+    grid-row: 1 / span 2; grid-column: 3;
+    background: var(--signal); color: var(--board);
+    font-weight: 800; padding: .6rem 1.1rem; border-radius: 6px;
+    white-space: nowrap;
+  }
+  .url { display: block; color: var(--board-dim); font-size: .85rem; margin-top: .2rem; word-break: break-all; }
+
+
+  .feedback { margin-top: 2.5rem; max-width: 44ch; }
+  .feedback h2 { font-size: 1.15rem; font-weight: 800; margin: 0 0 .35rem; }
+  .feedback p { margin: 0; color: var(--muted); }
+  footer {
+    margin-top: 3rem; padding: 2rem 0 2.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .foot { display: flex; justify-content: space-between; gap: 2rem; align-items: center; flex-wrap: wrap; }
+  .foot p { margin: 0; color: var(--muted); max-width: 52ch; }
+  .qr-box { display: flex; align-items: center; gap: 1rem; }
+  #qr { background: #fff; padding: 8px; border-radius: 6px; line-height: 0; }
+  #qr img, #qr canvas { width: 104px; height: 104px; }
+  .qr-box span { font-size: .95rem; color: var(--muted); max-width: 16ch; }
+
+  @media (max-width: 720px) {
+    .row { grid-template-columns: 1fr; padding: 1.1rem 1.1rem; }
+    .what { grid-column: 1; }
+    .go { grid-row: auto; grid-column: 1; justify-self: start; margin-top: .6rem; }
+    .board-head { padding: .9rem 1.1rem; }
+  }
+  @media print {
+    body { background: #fff; }
+    .board { box-shadow: none; }
+    .row:hover { background: none; }
+    .go { display: none; }
+    .url { color: var(--board-text); }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="sender">Instructie zone Brugge</div>
+      <h1>Oefentools voor treinbestuurders</h1>
+      <p class="lead">Korte, interactieve oefeningen om je kennis op te frissen wanneer het jou past. Ze werken in de browser op je gsm, tablet of pc, zonder installatie of account.</p>
+    </header>
+
+    <main>
+      <div class="board" role="list" aria-label="Beschikbare oefentools">
+        <div class="board-head">
+          <span>Beschikbare oefeningen</span>
+          <span class="clock" id="clock" aria-hidden="true">--:--</span>
+        </div>
+
+        <a class="row" role="listitem" href="https://raillingo.github.io/">
+          <span class="theme">Taal</span>
+          <span class="name">RailLingo
+            <span class="url">raillingo.github.io</span></span>
+          <span class="go">Openen</span>
+          <span class="what">782 spoorwegvaktermen en zinnen in het Nederlands en Frans. Oefen via meerkeuze, woordenbank of zelf typen, en speel in de competitiezone voor een plaats in het klassement. Ook beschikbaar voor Franstalige collega's.</span>
+        </a>
+
+        <a class="row" role="listitem" href="https://instructiebrugge.github.io/symbolen-etcs/">
+          <span class="theme">ETCS</span>
+          <span class="name">ETCS-symbolen sorteren
+            <span class="url">instructiebrugge.github.io/symbolen-etcs</span></span>
+          <span class="go">Openen</span>
+          <span class="what">Sleep elk symbool van de DMI naar de juiste kolom en zie meteen hoeveel je er juist hebt.</span>
+        </a>
+
+        <a class="row" role="listitem" href="https://instructiebrugge.github.io/koppelen-ontkoppelen-M7/">
+          <span class="theme">Materieel</span>
+          <span class="name">Koppelen en ontkoppelen HVR(m) M7
+            <span class="url">instructiebrugge.github.io/koppelen-ontkoppelen-M7</span></span>
+          <span class="go">Openen</span>
+          <span class="what">Zet de handelingen voor het koppelen en ontkoppelen van de M7 in het juiste vak van de tabel.</span>
+        </a>
+
+        <a class="row" role="listitem" href="https://instructiebrugge.github.io/koppelen-ontkoppelen-MR08/">
+          <span class="theme">Materieel</span>
+          <span class="name">Koppelen en ontkoppelen MR08
+            <span class="url">instructiebrugge.github.io/koppelen-ontkoppelen-MR08</span></span>
+          <span class="go">Openen</span>
+          <span class="what">Dezelfde oefening voor de MR08: plaats elke stap op de juiste plek in de procedure.</span>
+        </a>
+      </div>
+
+      <section class="feedback">
+        <h2>Mis je iets?</h2>
+        <p>Een fout gezien of een idee voor een nieuwe oefening? Laat het weten aan instructie zone Brugge.</p>
+      </section>
+    </main>
+
+    <footer>
+      <div class="foot">
+        <p>Deze oefentools worden ontwikkeld en beheerd door instructie zone Brugge. Deel deze pagina gerust met collega's: <strong>instructiebrugge.github.io/trainingstools</strong></p>
+        <div class="qr-box" id="qrBox">
+          <div id="qr" aria-hidden="true"></div>
+          <span>Scan om deze pagina op je gsm te openen</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  (function () {
+    var c = document.getElementById('clock');
+    function tick() {
+      var d = new Date();
+      c.textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+    tick(); setInterval(tick, 15000);
+
+    try {
+      new QRCode(document.getElementById('qr'), {
+        text: 'https://instructiebrugge.github.io/trainingstools/',
+        width: 208, height: 208,
+        colorDark: '#0E2340', colorLight: '#ffffff'
+      });
+    } catch (e) {
+      document.getElementById('qrBox').style.display = 'none';
+    }
+  })();
+</script>
+</body>
+</html>
